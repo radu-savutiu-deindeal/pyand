@@ -198,6 +198,7 @@ class ADB(object):
         #Clear existing list of devices
         self.__devices = None
         self.run_cmd("devices")
+        print "Output:", self.__output
         device_dict =  {}
         if self.__error is not None:
             return None
@@ -207,9 +208,25 @@ class ADB(object):
             for line in output_list:
                 pattern = re.compile(r"([^\s]+)\s+device$")
                 device = pattern.findall(line)
+                print device
                 if device:
                     device_dict[n] = device[0]
                     n += 1
+                #endif
+            if len(device_dict)==0:
+                print "device list quickfix \r"
+                output_list = self.__output.split("\r")
+                print "output list:", output_list
+                for line in output_list:
+                    print "line: ", line, type(line)
+                    pattern = re.compile(r"([^\s]+)\s+device$")
+                    device = pattern.findall(line)
+                    print device
+                    if device:
+                        print "device found: ", device
+                        device_dict[n] = device[0]
+                        n += 1
+                        # endif
         except:
             self.__devices = None
             error = 1
